@@ -29,7 +29,7 @@ class cs19b032NN(nn.Module):
         return logits
     
 # sample invocation torch.hub.load(myrepo,'get_model',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
-def get_model(train_data_loader=train_dataloader, n_epochs=10):
+def get_model(train_data_loader=train_dataloader, n_epochs=1):
   model = cs19b032NN().to(device)
   optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
@@ -89,13 +89,33 @@ def get_model_advanced(train_data_loader=None, n_epochs=10,lr=1e-4,config=None):
 def test_model(model1=None, test_data_loader=None):
 
   accuracy_val, precision_val, recall_val, f1score_val = 0, 0, 0, 0
-  # write your code here as per instructions
-  # ... your code ...
-  # ... your code ...
-  # ... and so on ...
-  # calculate accuracy, precision, recall and f1score
   
-  print ('Returning metrics... (rollnumber: xx)')
+  size = len(test_data_loader.dataset)
+  num_batches = len(test_data_loader)
+  model1.eval()
+  test_loss, correct = 0, 0
+  
+
+  y_true = []
+  y_pred = []
+
+  with torch.no_grad():
+      for X, y in test_data_loader:
+          X, y = X.to(device), y.to(device)
+          pred = model1(X)
+          test_loss += loss_fn(pred, y).item()
+          y_true.append(y)
+          y_pred.append(pred)
+          correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+  test_loss /= num_batches
+  correct /= size
+
+
+  accuracy_val = correct
+
+  print(y_true)
+  print(y_pred)
+  print ('Returning metrics... (rollnumber: cs19b032)')
   
   return accuracy_val, precision_val, recall_val, f1score_val
 
