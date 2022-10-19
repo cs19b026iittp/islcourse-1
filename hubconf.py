@@ -12,11 +12,11 @@ loss_fn = nn.CrossEntropyLoss()
 
 # neural network
 class cs19b032NN(nn.Module):
- def __init__(self):
+ def __init__(self, img_size):
         super(cs19b032NN, self).__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(28*28, 512),
+            nn.Linear(img_size, 512),
             nn.ReLU(),
             nn.Linear(512, 512),
             nn.ReLU(),
@@ -30,7 +30,11 @@ class cs19b032NN(nn.Module):
     
 # sample invocation torch.hub.load(myrepo,'get_model',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
 def get_model(train_data_loader=None, n_epochs=1):
-  model = cs19b032NN().to(device)
+  
+  dataiter = iter(train_data_loader)
+  img, _ = dataiter.next()
+  
+  model = cs19b032NN(img.shape[2]*img.shape[3]).to(device)
   optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
   size = len(train_data_loader.dataset)
@@ -60,7 +64,7 @@ def get_model(train_data_loader=None, n_epochs=1):
 
 # sample invocation torch.hub.load(myrepo,'get_model_advanced',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
 def get_model_advanced(train_data_loader=None, n_epochs=10,lr=1e-4,config=None):
-  model = None
+  model = get_model(train_data_loader, n_epochs)
 
   # write your code here as per instructions
   # ... your code ...
@@ -113,8 +117,6 @@ def test_model(model1=None, test_data_loader=None):
 
   accuracy_val = correct
 
-  print(y_true[0])
-  print(y_pred[0])
   print ('Returning metrics... (rollnumber: cs19b032)')
   
   return accuracy_val, precision_val, recall_val, f1score_val
