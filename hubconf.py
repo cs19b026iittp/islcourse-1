@@ -101,11 +101,11 @@ def test_model(model1=None, test_data_loader=None):
 
   with torch.no_grad():
       for X, y in test_data_loader:
+          y_true.append(y)
           X, y = X.to(device), y.to(device)
           pred = model1(X)
           test_loss += loss_fn(pred, y).item()
-          y_true.append(y)
-          y_pred.append(pred)
+          y_pred.append(pred.argmax(1))
           correct += (pred.argmax(1) == y).type(torch.float).sum().item()
   test_loss /= num_batches
   correct /= size
@@ -113,8 +113,8 @@ def test_model(model1=None, test_data_loader=None):
 
   accuracy_val = correct
 
-  print(y_true)
-  print(y_pred)
+  print(y_true[0])
+  print(y_pred[0])
   print ('Returning metrics... (rollnumber: cs19b032)')
   
   return accuracy_val, precision_val, recall_val, f1score_val
