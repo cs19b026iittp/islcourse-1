@@ -12,7 +12,7 @@ loss_fn = nn.CrossEntropyLoss()
 # neural network
 class cs19b032NN(nn.Module):
   def __init__(self):
-        super(Net, self).__init__()
+        super(cs19b032NN, self).__init__()
         # 1 input image channel, 6 output channels, 5x5 square convolution
         # kernel
         self.conv1 = nn.Conv2d(1, 6, 5)
