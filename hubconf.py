@@ -4,8 +4,10 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor
   
-def charan():
-  print("charan")
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using {device} device")
+
+loss_fn = nn.CrossEntropyLoss()
 
 # neural network
 class cs19b032NN(nn.Module):
@@ -32,18 +34,27 @@ class cs19b032NN(nn.Module):
     
 # sample invocation torch.hub.load(myrepo,'get_model',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
 def get_model(train_data_loader=None, n_epochs=10):
-  model = None
+    model = cs19b032NN().to(device)
+    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-  # write your code here as per instructions
-  # ... your code ...
-  # ... your code ...
-  # ... and so on ...
-  # Use softmax and cross entropy loss functions
-  # set model variable to proper object, make use of train_data
+    for i, (images, labels) in enumerate(train_data_loader):
+      # origin shape: [4, 3, 32, 32] = 4, 3, 1024
+      # input_layer: 3 input channels, 6 output channels, 5 kernel size
+      images = images.to(device)
+      labels = labels.to(device)
+
+      # Forward pass
+      outputs = model(images)
+      loss = loss_fn(outputs, labels)
+
+      # Backward and optimize
+      optimizer.zero_grad()
+      loss.backward()
+      optimizer.step()
   
-  print ('Returning model... (rollnumber: xx)')
+      print ('Returning model... (rollnumber: xx)')
   
-  return model
+      return model
 
 # sample invocation torch.hub.load(myrepo,'get_model_advanced',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
 def get_model_advanced(train_data_loader=None, n_epochs=10,lr=1e-4,config=None):
