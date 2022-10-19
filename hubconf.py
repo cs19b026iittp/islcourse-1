@@ -34,27 +34,31 @@ class cs19b032NN(nn.Module):
     
 # sample invocation torch.hub.load(myrepo,'get_model',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
 def get_model(train_data_loader=None, n_epochs=10):
-    model = cs19b032NN().to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+  model = cs19b032NN().to(device)
+  optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-    for i, (images, labels) in enumerate(train_data_loader):
-      # origin shape: [4, 3, 32, 32] = 4, 3, 1024
-      # input_layer: 3 input channels, 6 output channels, 5 kernel size
-      images = images.to(device)
-      labels = labels.to(device)
+  for epoch in n_epochs:
+    print("Epoch ", epoch);
+    for batch, (X, y) in enumerate(train_dataloader):
+      X, y = X.to(device), y.to(device)
 
-      # Forward pass
-      outputs = model(images)
-      loss = loss_fn(outputs, labels)
+      # Compute prediction error
+      pred = model(X)
+      loss = loss_fn(pred, y)
 
-      # Backward and optimize
+      # Backpropagation
       optimizer.zero_grad()
       loss.backward()
       optimizer.step()
+
+      if batch % 100 == 0:
+          loss, current = loss.item(), batch * len(X)
+          print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
   
-      print ('Returning model... (rollnumber: xx)')
+  print ('Returning model... (rollnumber: cs19b032)')
   
-      return model
+  return model
 
 # sample invocation torch.hub.load(myrepo,'get_model_advanced',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
 def get_model_advanced(train_data_loader=None, n_epochs=10,lr=1e-4,config=None):
