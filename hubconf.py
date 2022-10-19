@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 import torch.nn.functional as F
 from torchvision.transforms import ToTensor
+from torchmetrics.functional import precision_recall
   
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using {device} device")
@@ -64,6 +65,8 @@ def get_model(train_data_loader=None, n_epochs=1):
 
 # sample invocation torch.hub.load(myrepo,'get_model_advanced',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
 def get_model_advanced(train_data_loader=None, n_epochs=10,lr=1e-4,config=None):
+  
+  
   model = get_model(train_data_loader, n_epochs)
 
   # write your code here as per instructions
@@ -105,19 +108,18 @@ def test_model(model1=None, test_data_loader=None):
 
   with torch.no_grad():
       for X, y in test_data_loader:
-          y_true.append(y)
+          y_true.append(y[0])
           X, y = X.to(device), y.to(device)
           pred = model1(X)
           test_loss += loss_fn(pred, y).item()
-          y_pred.append(pred.argmax(1))
+          y_pred.append(pred[0].argmax(0))
           correct += (pred.argmax(1) == y).type(torch.float).sum().item()
   test_loss /= num_batches
   correct /= size
 
-
   accuracy_val = correct
+  precision_val, recall_val = precision_recall(torch.tensor(y_pred), torch.tensor(y_true), average='macro', num_classes = max(y_pred) + 1)
+  f1score_val = 2*(precision_val * recall_val) / (precision_val + recall_val)
 
   print ('Returning metrics... (rollnumber: cs19b032)')
-  
   return accuracy_val, precision_val, recall_val, f1score_val
-
