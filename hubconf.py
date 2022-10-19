@@ -37,7 +37,7 @@ def get_model(train_data=None, n_epochs=10):
   model = cs19b032NN().to(device)
   optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-  for epoch in n_epochs:
+  for epoch in range(1,n_epochs+1):
     print("Epoch ", epoch);
     for batch, (X, y) in enumerate(train_dataloader):
       X, y = X.to(device), y.to(device)
