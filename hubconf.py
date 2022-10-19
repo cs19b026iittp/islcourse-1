@@ -33,7 +33,7 @@ class cs19b032NN(nn.Module):
         return x
     
 # sample invocation torch.hub.load(myrepo,'get_model',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
-def get_model(train_data_loader=None, n_epochs=10):
+def get_model(train_data=None, n_epochs=10):
   model = cs19b032NN().to(device)
   optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
