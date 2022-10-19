@@ -29,15 +29,15 @@ class cs19b032NN(nn.Module):
         return logits
     
 # sample invocation torch.hub.load(myrepo,'get_model',train_data_loader=train_data_loader,n_epochs=5, force_reload=True)
-def get_model(train_data_loader=train_dataloader, n_epochs=1):
+def get_model(train_data_loader=None, n_epochs=1):
   model = cs19b032NN().to(device)
   optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-  size = len(train_dataloader.dataset)
+  size = len(train_data_loader.dataset)
   model.train()
   for epoch in range(1,n_epochs+1):
     print("Epoch ", epoch);
-    for batch, (X, y) in enumerate(train_dataloader):
+    for batch, (X, y) in enumerate(train_data_loader):
       X, y = X.to(device), y.to(device)
 
       # Compute prediction error
