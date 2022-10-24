@@ -1,1 +1,4 @@
-ISL MidSem
+# ISL MidSem
+
+## Dependencies
+torchmetrics `pip install torchmetrics`
