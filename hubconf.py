@@ -116,7 +116,7 @@ def test_model(model1=None, test_data_loader=None):
   
   size = len(test_data_loader.dataset)
   num_batches = len(test_data_loader)
-  model.eval()
+  model1.eval()
 
   actual = []   
   predicted = [] 
@@ -124,7 +124,7 @@ def test_model(model1=None, test_data_loader=None):
   with torch.no_grad():
       for X, y in test_data_loader:
            X, y = X.to(device), y.to(device)
-           y1 = model(X)
+           y1 = model1(X)
            actual.append(y)
            predicted.append(y1.argmax(1))
            y_h = F.one_hot(y, num_classes= 10)
